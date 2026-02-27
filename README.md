@@ -1,12 +1,10 @@
 # <img align="left" width="45" height="45" src="https://github.com/osinfra-io/opentofu-datadog-google-integration/assets/1610100/95823e0c-3573-48fa-a2bc-646da96d76d6"> Datadog - Google Cloud Platform Integration OpenTofu Module
 
-**[GitHub Actions](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions):**
-
-[![OpenTofu Tests](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/test.yml/badge.svg)](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/test.yml) [![Dependabot](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/dependabot.yml/badge.svg)](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/dependabot.yml)
+[![OpenTofu Tests](https://img.shields.io/github/actions/workflow/status/osinfra-io/opentofu-datadog-google-integration/test.yml?style=for-the-badge&logo=opentofu&color=FEDA15&label=OpenTofu%20Tests)](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/test.yml) [![Dependabot](https://img.shields.io/github/actions/workflow/status/osinfra-io/opentofu-datadog-google-integration/dependabot.yml?style=for-the-badge&logo=github&color=2088FF&label=Dependabot)](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/dependabot.yml)
 
 ## Repository Description
 
-OpenTofu **example** module for Datadog Google Cloud Platform integration.
+OpenTofu **example** module that configures Datadog's GCP integration using Workload Identity Federation (STS), eliminating the need for service account key rotation. It provisions a Pub/Sub topic and subscription for log export, a Cloud Asset project feed for resource change tracking, and grants the necessary IAM roles for Datadog monitoring and CSPM. Optionally, a BigQuery dataset and GCS bucket are created to support Datadog Cloud Cost Management.
 
 > [!NOTE]
 > We do not recommend consuming this module like you might a [public module](https://search.opentofu.org). It is a baseline, something you can fork, potentially maintain, and modify to fit your organization's needs. Using public modules vs. writing your own has various [drivers and trade-offs](https://docs.osinfra.io/fundamentals/architecture-decision-records/adr-0003) that your organization should evaluate.
@@ -14,7 +12,7 @@ OpenTofu **example** module for Datadog Google Cloud Platform integration.
 ## 🔩 Usage
 
 > [!TIP]
-> You can check the [fixtures](fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
+> You can check the [tests/fixtures](tests/fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
 
 Required APIs (managed with the [opentofu-google-project](https://github.com/osinfra-io/opentofu-google-project) child module):
 
