@@ -4,7 +4,7 @@
 
 ## Repository Description
 
-OpenTofu **example** module for Datadog Google Cloud Platform integration.
+OpenTofu **example** module that configures Datadog's GCP integration using Workload Identity Federation (STS), eliminating the need for service account key rotation. It provisions a Pub/Sub topic and subscription for log export, a Cloud Asset project feed for resource change tracking, and grants the necessary IAM roles for Datadog monitoring and CSPM. Optionally, a BigQuery dataset and GCS bucket are created to support Datadog Cloud Cost Management.
 
 > [!NOTE]
 > We do not recommend consuming this module like you might a [public module](https://search.opentofu.org). It is a baseline, something you can fork, potentially maintain, and modify to fit your organization's needs. Using public modules vs. writing your own has various [drivers and trade-offs](https://docs.osinfra.io/fundamentals/architecture-decision-records/adr-0003) that your organization should evaluate.
