@@ -42,6 +42,7 @@ variable "is_security_command_center_enabled" {
   type        = bool
   default     = true
 }
+
 variable "labels" {
   description = "A map of key/value pairs to assign to the resources being created"
   type        = map(string)
@@ -49,6 +50,7 @@ variable "labels" {
     system = "datadog"
   }
 }
+
 variable "project" {
   description = "The ID of the project in which the resource belongs"
   type        = string

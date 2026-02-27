@@ -25,7 +25,9 @@ resource "datadog_integration_gcp_sts" "this" {
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/bigquery_dataset
 
 resource "google_bigquery_dataset" "billing_export" {
-  count = var.enable_cloud_cost_management ? 1 : 0
+  lifecycle {
+    enabled = var.enable_cloud_cost_management
+  }
 
   dataset_id    = "billing_export"
   description   = "Cloud Billing data to export to BigQuery"
@@ -40,9 +42,11 @@ resource "google_bigquery_dataset" "billing_export" {
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/bigquery_dataset_iam_member
 
 resource "google_bigquery_dataset_iam_member" "billing_export" {
-  count = var.enable_cloud_cost_management ? 1 : 0
+  lifecycle {
+    enabled = var.enable_cloud_cost_management
+  }
 
-  dataset_id = google_bigquery_dataset.billing_export[0].dataset_id
+  dataset_id = google_bigquery_dataset.billing_export.dataset_id
   member     = "serviceAccount:${google_service_account.integration.email}"
   project    = var.project
   role       = "roles/bigquery.dataEditor"
@@ -86,7 +90,9 @@ resource "google_service_account_iam_member" "integration" {
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket
 
 resource "google_storage_bucket" "cloud_cost_management" {
-  count = var.enable_cloud_cost_management ? 1 : 0
+  lifecycle {
+    enabled = var.enable_cloud_cost_management
+  }
 
   labels                      = var.labels
   location                    = var.cloud_cost_management_location
@@ -104,7 +110,7 @@ resource "google_storage_bucket_iam_member" "cloud_cost_management" {
     "roles/storage.legacyBucketWriter"
   ]) : toset([])
 
-  bucket = google_storage_bucket.cloud_cost_management[0].name
+  bucket = google_storage_bucket.cloud_cost_management.name
   member = "serviceAccount:${google_service_account.integration.email}"
   role   = each.key
 }
@@ -200,6 +206,6 @@ resource "google_pubsub_topic_iam_member" "integration" {
 # https://search.opentofu.org/provider/hashicorp/random/latest/docs/resources/id
 
 resource "random_id" "this" {
-  prefix      = "tf"
   byte_length = "2"
+  prefix      = "tf"
 }
