@@ -2,11 +2,11 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 
 metadata:
-  name: opentofu-datadog-google-integration
+  name: pt-arche-datadog-google-integration
   description: OpenTofu example module for Datadog Google Cloud Platform integration
 
   annotations:
-    github.com/project-slug: osinfra/opentofu-datadog-google-integration
+    github.com/project-slug: osinfra/pt-arche-datadog-google-integration
     backstage.io/techdocs-ref: dir:.
 
   tags:
