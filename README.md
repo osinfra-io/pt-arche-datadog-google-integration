@@ -1,6 +1,6 @@
-# <img align="left" width="45" height="45" src="https://github.com/osinfra-io/opentofu-datadog-google-integration/assets/1610100/95823e0c-3573-48fa-a2bc-646da96d76d6"> Datadog - Google Cloud Platform Integration OpenTofu Module
+# <img align="left" width="45" height="45" src="https://github.com/osinfra-io/pt-arche-datadog-google-integration/assets/1610100/95823e0c-3573-48fa-a2bc-646da96d76d6"> Datadog - Google Cloud Platform Integration OpenTofu Module
 
-[![OpenTofu Tests](https://img.shields.io/github/actions/workflow/status/osinfra-io/opentofu-datadog-google-integration/test.yml?style=for-the-badge&logo=opentofu&color=FEDA15&label=OpenTofu%20Tests)](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/test.yml) [![Dependabot](https://img.shields.io/github/actions/workflow/status/osinfra-io/opentofu-datadog-google-integration/dependabot.yml?style=for-the-badge&logo=github&color=2088FF&label=Dependabot)](https://github.com/osinfra-io/opentofu-datadog-google-integration/actions/workflows/dependabot.yml)
+[![OpenTofu Tests](https://img.shields.io/github/actions/workflow/status/osinfra-io/pt-arche-datadog-google-integration/test.yml?style=for-the-badge&logo=opentofu&color=FEDA15&label=OpenTofu%20Tests)](https://github.com/osinfra-io/pt-arche-datadog-google-integration/actions/workflows/test.yml) [![Dependabot](https://img.shields.io/github/actions/workflow/status/osinfra-io/pt-arche-datadog-google-integration/dependabot.yml?style=for-the-badge&logo=github&color=2088FF&label=Dependabot)](https://github.com/osinfra-io/pt-arche-datadog-google-integration/actions/workflows/dependabot.yml)
 
 ## Repository Description
 
@@ -14,7 +14,7 @@ OpenTofu **example** module that configures Datadog's GCP integration using Work
 > [!TIP]
 > You can check the [tests/fixtures](tests/fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
 
-Required APIs (managed with the [opentofu-google-project](https://github.com/osinfra-io/opentofu-google-project) child module):
+Required APIs (managed with the [pt-arche-google-project](https://github.com/osinfra-io/pt-arche-google-project) child module):
 
 - `bigquerydatatransfer.googleapis.com` (If `enable_cloud_cost_management` is `true`)
 - `bigquery.googleapis.com` (If `enable_cloud_cost_management` is `true`)
