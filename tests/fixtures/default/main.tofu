@@ -1,5 +1,5 @@
-# Required Providers
-# https://opentofu.org/docs/language/providers/requirements
+# Resources
+# https://opentofu.org/docs/language/resources
 
 terraform {
   required_providers {
