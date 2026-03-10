@@ -124,6 +124,9 @@ resource "google_pubsub_subscription" "integration" {
   }
 }
 
+# Google Pub/Sub Subscription IAM Member
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_subscription_iam_member
+
 resource "google_pubsub_subscription_iam_member" "export_asset_changes_to_datadog" {
   member       = "serviceAccount:${google_service_account.integration.email}"
   project      = var.project
@@ -139,6 +142,9 @@ resource "google_pubsub_topic" "export_asset_changes_to_datadog" {
   name    = "export-asset-changes-to-datadog"
   project = var.project
 }
+
+# Google Pub/Sub Topic
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_topic
 
 resource "google_pubsub_topic" "integration" {
   labels  = var.labels
@@ -193,10 +199,7 @@ resource "google_storage_bucket" "cloud_cost_management" {
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket_iam_member
 
 resource "google_storage_bucket_iam_member" "cloud_cost_management" {
-  for_each = var.enable_cloud_cost_management ? toset([
-    "roles/storage.legacyObjectReader",
-    "roles/storage.legacyBucketWriter"
-  ]) : toset([])
+  for_each = local.cloud_cost_management_roles
 
   bucket = google_storage_bucket.cloud_cost_management.name
   member = "serviceAccount:${google_service_account.integration.email}"

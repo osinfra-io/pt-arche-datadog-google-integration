@@ -2,14 +2,17 @@
 # https://opentofu.org/docs/language/values/variables
 
 variable "enable_cloud_cost_management" {
-  type = bool
+  description = "Whether to enable cloud cost management features"
+  type        = bool
 }
 
 variable "environment" {
-  type = string
+  description = "The deployment environment"
+  type        = string
 }
 
 
 variable "project" {
-  type = string
+  description = "The GCP project ID"
+  type        = string
 }
