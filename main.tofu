@@ -1,5 +1,5 @@
-# Resources
-# https://opentofu.org/docs/language/resources
+# Datadog Provider
+# https://search.opentofu.org/provider/DataDog/datadog/latest/docs
 
 terraform {
   required_providers {
