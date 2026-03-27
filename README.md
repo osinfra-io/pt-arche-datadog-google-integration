@@ -34,8 +34,12 @@ Required APIs (managed with the [pt-arche-google-project](https://github.com/osi
 
 Links to documentation and other resources required to develop and iterate in this repository successfully.
 
+- [bigquery](https://cloud.google.com/bigquery/docs)
+- [cloud asset inventory](https://cloud.google.com/asset-inventory/docs)
+- [cloud logging](https://cloud.google.com/logging/docs)
 - [gcp-cloud-cost-management](https://docs.datadoghq.com/cloud_cost_management/google_cloud)
 - [gcp-integration](https://docs.datadoghq.com/integrations/google_cloud_platform)
+- [pub/sub](https://cloud.google.com/pubsub/docs)
 
 ## 🔍 Tests
 
