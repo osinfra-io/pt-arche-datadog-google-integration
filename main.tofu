@@ -9,18 +9,6 @@ terraform {
   }
 }
 
-# Datadog Integration Google Resource
-# https://search.opentofu.org/provider/DataDog/datadog/latest/docs/resources/integration_gcp_sts
-
-resource "datadog_integration_gcp_sts" "this" {
-  client_email                          = google_service_account.integration.email
-  host_filters                          = var.host_filters
-  is_cspm_enabled                       = var.is_cspm_enabled
-  is_resource_change_collection_enabled = var.is_resource_change_collection_enabled
-  is_security_command_center_enabled    = var.is_security_command_center_enabled
-  resource_collection_enabled           = var.resource_collection_enabled
-}
-
 # Google BigQuery Dataset Resource
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/bigquery_dataset
 
@@ -52,6 +40,32 @@ resource "google_bigquery_dataset_iam_member" "billing_export" {
   role       = "roles/bigquery.dataEditor"
 }
 
+# Google Storage Bucket Resource
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket
+
+resource "google_storage_bucket" "cloud_cost_management" {
+  lifecycle {
+    enabled = var.enable_cloud_cost_management
+  }
+
+  labels                      = var.labels
+  location                    = var.cloud_cost_management_location
+  name                        = "datadog-cloud-cost-management-${random_id.this.hex}"
+  project                     = var.project
+  uniform_bucket_level_access = true
+}
+
+# Google Storage Bucket IAM Member Resource
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket_iam_member
+
+resource "google_storage_bucket_iam_member" "cloud_cost_management" {
+  for_each = local.cloud_cost_management_roles
+
+  bucket = google_storage_bucket.cloud_cost_management.name
+  member = "serviceAccount:${google_service_account.integration.email}"
+  role   = each.key
+}
+
 # Google Cloud Asset Project Feed Resource
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/cloud_asset_project_feed
 
@@ -69,40 +83,6 @@ resource "google_cloud_asset_project_feed" "export_asset_changes_to_datadog" {
   project = var.project
 }
 
-# Google Logging Project Sink Resource
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/logging_project_sink
-
-resource "google_logging_project_sink" "integration" {
-  destination = "pubsub.googleapis.com/projects/${var.project}/topics/${google_pubsub_topic.integration.name}"
-
-  exclusions {
-    filter = "protoPayload.authenticationInfo.principalEmail=\"${google_service_account.integration.email}\""
-    name   = "exclude-datadog-logs"
-  }
-
-  name                   = "export-logs-to-datadog"
-  project                = var.project
-  unique_writer_identity = true
-}
-
-# Google Project IAM Member Resource
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/google_project_iam#google_project_iam_member
-
-resource "google_project_iam_member" "this" {
-  for_each = toset([
-    "organizations/163313809793/roles/datadog.cloudCostManagement",
-    "roles/browser",
-    "roles/cloudasset.viewer",
-    "roles/compute.viewer",
-    "roles/monitoring.viewer",
-    "roles/securitycenter.findingsViewer"
-  ])
-
-  member  = "serviceAccount:${google_service_account.integration.email}"
-  project = var.project
-  role    = each.key
-}
-
 # Google PubSub Subscription Resource
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_subscription
 
@@ -111,20 +91,6 @@ resource "google_pubsub_subscription" "export_asset_changes_to_datadog" {
   name    = "export-asset-changes-to-datadog"
   project = var.project
   topic   = google_pubsub_topic.export_asset_changes_to_datadog.name
-}
-
-# Google PubSub Subscription Resource
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_subscription
-
-resource "google_pubsub_subscription" "integration" {
-  labels  = var.labels
-  name    = "export-logs-to-datadog"
-  project = var.project
-  topic   = google_pubsub_topic.integration.name
-
-  push_config {
-    push_endpoint = "https://gcp-intake.logs.datadoghq.com/api/v2/logs?dd-api-key=${var.api_key}&dd-protocol=gcp"
-  }
 }
 
 # Google Pub/Sub Subscription IAM Member
@@ -144,6 +110,36 @@ resource "google_pubsub_topic" "export_asset_changes_to_datadog" {
   labels  = var.labels
   name    = "export-asset-changes-to-datadog"
   project = var.project
+}
+
+# Google Logging Project Sink Resource
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/logging_project_sink
+
+resource "google_logging_project_sink" "integration" {
+  destination = "pubsub.googleapis.com/projects/${var.project}/topics/${google_pubsub_topic.integration.name}"
+
+  exclusions {
+    filter = "protoPayload.authenticationInfo.principalEmail=\"${google_service_account.integration.email}\""
+    name   = "exclude-datadog-logs"
+  }
+
+  name                   = "export-logs-to-datadog"
+  project                = var.project
+  unique_writer_identity = true
+}
+
+# Google PubSub Subscription Resource
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_subscription
+
+resource "google_pubsub_subscription" "integration" {
+  labels  = var.labels
+  name    = "export-logs-to-datadog"
+  project = var.project
+  topic   = google_pubsub_topic.integration.name
+
+  push_config {
+    push_endpoint = "https://gcp-intake.logs.datadoghq.com/api/v2/logs?dd-api-key=${var.api_key}&dd-protocol=gcp"
+  }
 }
 
 # Google Pub/Sub Topic
@@ -183,30 +179,34 @@ resource "google_service_account_iam_member" "integration" {
   service_account_id = google_service_account.integration.name
 }
 
-# Google Storage Bucket Resource
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket
+# Datadog Integration Google Resource
+# https://search.opentofu.org/provider/DataDog/datadog/latest/docs/resources/integration_gcp_sts
 
-resource "google_storage_bucket" "cloud_cost_management" {
-  lifecycle {
-    enabled = var.enable_cloud_cost_management
-  }
-
-  labels                      = var.labels
-  location                    = var.cloud_cost_management_location
-  name                        = "datadog-cloud-cost-management-${random_id.this.hex}"
-  project                     = var.project
-  uniform_bucket_level_access = true
+resource "datadog_integration_gcp_sts" "this" {
+  client_email                          = google_service_account.integration.email
+  host_filters                          = var.host_filters
+  is_cspm_enabled                       = var.is_cspm_enabled
+  is_resource_change_collection_enabled = var.is_resource_change_collection_enabled
+  is_security_command_center_enabled    = var.is_security_command_center_enabled
+  resource_collection_enabled           = var.resource_collection_enabled
 }
 
-# Google Storage Bucket IAM Member Resource
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket_iam_member
+# Google Project IAM Member Resource
+# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/google_project_iam#google_project_iam_member
 
-resource "google_storage_bucket_iam_member" "cloud_cost_management" {
-  for_each = local.cloud_cost_management_roles
+resource "google_project_iam_member" "this" {
+  for_each = toset([
+    "organizations/163313809793/roles/datadog.cloudCostManagement",
+    "roles/browser",
+    "roles/cloudasset.viewer",
+    "roles/compute.viewer",
+    "roles/monitoring.viewer",
+    "roles/securitycenter.findingsViewer"
+  ])
 
-  bucket = google_storage_bucket.cloud_cost_management.name
-  member = "serviceAccount:${google_service_account.integration.email}"
-  role   = each.key
+  member  = "serviceAccount:${google_service_account.integration.email}"
+  project = var.project
+  role    = each.key
 }
 
 # Random ID Resource
