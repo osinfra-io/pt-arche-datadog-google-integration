@@ -195,7 +195,7 @@ resource "google_storage_bucket" "cloud_cost_management" {
 # Google Storage Bucket IAM Member Resource
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket_iam_member
 
-resource "google_storage_bucket_iam_member" "cloud_cost_managements" {
+resource "google_storage_bucket_iam_member" "cloud_cost_management" {
   for_each = local.cloud_cost_management_roles
 
   bucket = google_storage_bucket.cloud_cost_management.name
