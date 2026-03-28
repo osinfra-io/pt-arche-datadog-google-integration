@@ -113,9 +113,6 @@ resource "google_pubsub_subscription" "export_asset_changes_to_datadog" {
   topic   = google_pubsub_topic.export_asset_changes_to_datadog.name
 }
 
-# Google PubSub Subscription Resource
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_subscription
-
 resource "google_pubsub_subscription" "integration" {
   labels  = var.labels
   name    = "export-logs-to-datadog"
@@ -145,9 +142,6 @@ resource "google_pubsub_topic" "export_asset_changes_to_datadog" {
   name    = "export-asset-changes-to-datadog"
   project = var.project
 }
-
-# Google Pub/Sub Topic
-# https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_topic
 
 resource "google_pubsub_topic" "integration" {
   labels  = var.labels
@@ -201,7 +195,7 @@ resource "google_storage_bucket" "cloud_cost_management" {
 # Google Storage Bucket IAM Member Resource
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/storage_bucket_iam_member
 
-resource "google_storage_bucket_iam_member" "cloud_cost_management" {
+resource "google_storage_bucket_iam_member" "cloud_cost_managements" {
   for_each = local.cloud_cost_management_roles
 
   bucket = google_storage_bucket.cloud_cost_management.name

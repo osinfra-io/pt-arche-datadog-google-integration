@@ -18,6 +18,9 @@ provider "datadog" {
   app_key = "mock"
 }
 
+# Datadog Google Integration
+# https://github.com/osinfra-io/pt-arche-datadog-google-integration
+
 module "test" {
   source = "../../../"
 
