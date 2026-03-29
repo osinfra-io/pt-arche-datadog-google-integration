@@ -14,7 +14,6 @@ terraform {
 
 resource "datadog_integration_gcp_sts" "this" {
   client_email                          = google_service_account.integration.email
-  host_filters                          = var.host_filters
   is_cspm_enabled                       = var.is_cspm_enabled
   is_resource_change_collection_enabled = var.is_resource_change_collection_enabled
   is_security_command_center_enabled    = var.is_security_command_center_enabled
