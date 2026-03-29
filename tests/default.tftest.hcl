@@ -29,6 +29,5 @@ run "default" {
 
 variables {
   enable_cloud_cost_management = true
-  environment            = "mock-environment"
-  project                = "mock-project"
+  project                      = "mock-project"
 }

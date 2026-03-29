@@ -1,14 +1,3 @@
-# Datadog Provider
-# https://search.opentofu.org/provider/DataDog/datadog/latest/docs
-
-terraform {
-  required_providers {
-    datadog = {
-      source = "datadog/datadog"
-    }
-  }
-}
-
 # Datadog Integration Google Resource
 # https://search.opentofu.org/provider/DataDog/datadog/latest/docs/resources/integration_gcp_sts
 
@@ -46,7 +35,7 @@ resource "google_bigquery_dataset_iam_member" "billing_export" {
   }
 
   dataset_id = google_bigquery_dataset.billing_export.dataset_id
-  member     = "serviceAccount:${google_service_account.integration.email}"
+  member     = local.service_account_member
   project    = var.project
   role       = "roles/bigquery.dataEditor"
 }
@@ -72,10 +61,10 @@ resource "google_cloud_asset_project_feed" "export_asset_changes_to_datadog" {
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/logging_project_sink
 
 resource "google_logging_project_sink" "integration" {
-  destination = "pubsub.googleapis.com/projects/${var.project}/topics/${google_pubsub_topic.integration.name}"
+  destination = local.logging_sink_destination
 
   exclusions {
-    filter = "protoPayload.authenticationInfo.principalEmail=\"${google_service_account.integration.email}\""
+    filter = local.logging_exclusion_filter
     name   = "exclude-datadog-logs"
   }
 
@@ -97,7 +86,7 @@ resource "google_project_iam_member" "this" {
     "roles/securitycenter.findingsViewer"
   ])
 
-  member  = "serviceAccount:${google_service_account.integration.email}"
+  member  = local.service_account_member
   project = var.project
   role    = each.key
 }
@@ -116,18 +105,19 @@ resource "google_pubsub_subscription" "integration" {
   labels  = var.labels
   name    = "export-logs-to-datadog"
   project = var.project
-  topic   = google_pubsub_topic.integration.name
 
   push_config {
-    push_endpoint = "https://gcp-intake.logs.datadoghq.com/api/v2/logs?dd-api-key=${var.api_key}&dd-protocol=gcp"
+    push_endpoint = local.pubsub_push_endpoint
   }
+
+  topic = google_pubsub_topic.integration.name
 }
 
 # Google Pub/Sub Subscription IAM Member
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/pubsub_subscription_iam_member
 
 resource "google_pubsub_subscription_iam_member" "export_asset_changes_to_datadog" {
-  member       = "serviceAccount:${google_service_account.integration.email}"
+  member       = local.service_account_member
   project      = var.project
   role         = "roles/pubsub.subscriber"
   subscription = google_pubsub_subscription.export_asset_changes_to_datadog.name
@@ -171,7 +161,7 @@ resource "google_service_account" "integration" {
 # https://search.opentofu.org/provider/hashicorp/google/latest/docs/resources/google_service_account_iam_member
 
 resource "google_service_account_iam_member" "integration" {
-  member             = "serviceAccount:${datadog_integration_gcp_sts.this.delegate_account_email}"
+  member             = local.delegate_account_member
   role               = "roles/iam.serviceAccountTokenCreator"
   service_account_id = google_service_account.integration.name
 }
@@ -186,7 +176,7 @@ resource "google_storage_bucket" "cloud_cost_management" {
 
   labels                      = var.labels
   location                    = var.cloud_cost_management_location
-  name                        = "datadog-cloud-cost-management-${random_id.this.hex}"
+  name                        = local.cloud_cost_management_bucket_name
   project                     = var.project
   uniform_bucket_level_access = true
 }
@@ -198,7 +188,7 @@ resource "google_storage_bucket_iam_member" "cloud_cost_management" {
   for_each = local.cloud_cost_management_roles
 
   bucket = google_storage_bucket.cloud_cost_management.name
-  member = "serviceAccount:${google_service_account.integration.email}"
+  member = local.service_account_member
   role   = each.key
 }
 

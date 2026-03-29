@@ -6,12 +6,6 @@ variable "enable_cloud_cost_management" {
   type        = bool
 }
 
-variable "environment" {
-  description = "The deployment environment"
-  type        = string
-}
-
-
 variable "project" {
   description = "The GCP project ID"
   type        = string
