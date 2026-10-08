@@ -15,7 +15,7 @@ Consume the repository root with `source = "github.com/osinfra-io/pt-arche-datad
 The module creates a Datadog STS integration, service account and IAM grants, log-export Pub/Sub resources, and a Cloud Asset feed. CSPM, Security Command Center findings, resource inventory, and resource-change collection default to enabled. Cloud Cost Management defaults to disabled; enabling it creates a BigQuery dataset and GCS bucket and should be done in only one project for the billing export. These integrations can increase Datadog ingestion and GCP Pub/Sub, Logging, BigQuery, and Storage costs. The Datadog API key is embedded in the Pub/Sub push endpoint. OpenTofu can store it in state and saved plan files, so supply the key securely and protect those artifacts.
 
 > [!TIP]
-> You can check the [tests/fixtures](tests/fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
+> See [tests/fixtures](tests/fixtures) for example configurations.
 
 Required APIs (managed with the [pt-arche-google-project](https://github.com/osinfra-io/pt-arche-google-project) child module):
 
@@ -38,8 +38,6 @@ Required APIs (managed with the [pt-arche-google-project](https://github.com/osi
 
 ## 📋 Skills and Knowledge
 
-Links to documentation and other resources required to develop and iterate in this repository successfully.
-
 - [bigquery](https://cloud.google.com/bigquery/docs)
 - [cloud asset inventory](https://cloud.google.com/asset-inventory/docs)
 - [cloud logging](https://cloud.google.com/logging/docs)
@@ -49,7 +47,7 @@ Links to documentation and other resources required to develop and iterate in th
 
 ## 🔍 Tests
 
-All tests are [mocked](https://opentofu.org/docs/cli/commands/test/#the-mock_provider-blocks) allowing us to test the module without creating infrastructure or requiring credentials. The trade-offs are acceptable in favor of speed and simplicity. In an OpenTofu test, a mocked provider or resource will generate fake data for all computed attributes that would normally be provided by the underlying provider APIs.
+Tests use [mocked providers](https://opentofu.org/docs/cli/commands/test/#the-mock_provider-blocks); no infrastructure or credentials are required.
 
 ```none
 tofu init
