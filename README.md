@@ -15,7 +15,7 @@ Consume the repository root with `source = "github.com/osinfra-io/pt-arche-datad
 The module creates a Datadog STS integration, service account and IAM grants, log-export Pub/Sub resources, and a Cloud Asset feed. CSPM, Security Command Center findings, resource inventory, and resource-change collection default to enabled. Cloud Cost Management defaults to disabled; enabling it creates a BigQuery dataset and GCS bucket and should be done in only one project for the billing export. These integrations can increase Datadog ingestion and GCP Pub/Sub, Logging, BigQuery, and Storage costs. The Datadog API key is embedded in the Pub/Sub push endpoint. OpenTofu can store it in state and saved plan files, so supply the key securely and protect those artifacts.
 
 > [!TIP]
-> See [tests/fixtures](tests/fixtures) for example configurations.
+> You can check the [tests/fixtures](tests/fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
 
 Required APIs (managed with the [pt-arche-google-project](https://github.com/osinfra-io/pt-arche-google-project) child module):
 
