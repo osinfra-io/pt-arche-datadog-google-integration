@@ -10,6 +10,8 @@ Reusable OpenTofu child module that configures Datadog's GCP integration using W
 
 Enable Cloud Cost Management in only one project for the billing export. Review Datadog ingestion and licensing costs before deployment. The Datadog API key is embedded in the Pub/Sub push endpoint and can appear in OpenTofu state and saved plans; protect those artifacts.
 
+The Datadog export sink omits exact successful CSI registrar health checks and filestore lease renewals from their `kube-system` containers at INFO severity. Other messages, errors, and audit payloads remain eligible for forwarding. These exclusions do not change independent GCP logging sinks or their retention.
+
 > [!TIP]
 > You can check the [tests/fixtures](tests/fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
 
