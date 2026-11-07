@@ -10,7 +10,7 @@ Reusable OpenTofu child module that configures Datadog's GCP integration using W
 
 Enable Cloud Cost Management in only one project for the billing export. Review Datadog ingestion and licensing costs before deployment. The Datadog API key is embedded in the Pub/Sub push endpoint and can appear in OpenTofu state and saved plans; protect those artifacts.
 
-The Datadog export sink omits exact successful CSI registrar health checks and filestore lease renewals from their `kube-system` containers at INFO severity. Other messages, errors, and audit payloads remain eligible for forwarding. These exclusions do not change independent GCP logging sinks or their retention.
+At INFO severity, the Datadog export sink omits successful CSI registrar polling, filestore lease renewals, and successful cluster-name metadata requests from their `kube-system` containers. It retains a 10% sample of routine Konnectivity connection messages. Duplicate INFO logs from `authentik/cloud-sql-proxy` are omitted from GCP export; keep Datadog Agent collection enabled for that container. These container exclusions preserve other messages, non-INFO logs, and audit payloads, and do not change independent GCP logging sinks or their retention.
 
 > [!TIP]
 > You can check the [tests/fixtures](tests/fixtures) directory for example configurations. These fixtures set up the system for testing by providing all the necessary initial code, thus creating good examples on which to base your configurations.
