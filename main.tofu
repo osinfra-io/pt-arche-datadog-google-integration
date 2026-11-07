@@ -68,6 +68,15 @@ resource "google_logging_project_sink" "integration" {
     name   = "exclude-datadog-logs"
   }
 
+  dynamic "exclusions" {
+    for_each = local.logging_gke_success_filters
+
+    content {
+      filter = exclusions.value
+      name   = exclusions.key
+    }
+  }
+
   name                   = "export-logs-to-datadog"
   project                = var.project
   unique_writer_identity = true
